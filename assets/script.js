@@ -1,4 +1,3 @@
-
 var rootEl = document.getElementById("root");
 var quizState = localStorage.getItem("quizState");
 quizState = localStorage.getItem(quizState);
@@ -175,11 +174,11 @@ function writeHighScoreScreen() {
         e.preventDefault();
         let highScores;
         try {
-        highScores = JSON.parse(localStorage.getItem("highScores"));
+            highScores = JSON.parse(localStorage.getItem("highScores"));
+            highScores.push(form.children[0].value + ": " + localStorage.getItem("score"));
         } catch (e) {
-            highScores = []; 
+            highScores = [form.children[0].value + ": " + localStorage.getItem("score")]; 
         }
-        highScores.push(form.children[0].value + ": " + localStorage.getItem("score"));
         localStorage.setItem("highScores", JSON.stringify(highScores));
         quizState++;
         quizStateCheck();
