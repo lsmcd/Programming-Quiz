@@ -2,6 +2,7 @@ var rootEl = document.getElementById("root");
 var quizState = localStorage.getItem("quizState");
 quizState = localStorage.getItem(quizState);
 
+// Listener for the View Highscores nav item that takes you to the highscores screen
 document.getElementById("viewHighScores").addEventListener("click", function(){
     clearInterval(interval);
     document.getElementById("timer").textContent = ""
@@ -14,7 +15,7 @@ if (quizState === null) {
 }
 
 quizStateCheck();
-
+// Timer function with the interval var set in order to cancel it anywhere
 var interval;
 function startTimer(stop) {
     interval = setInterval(function () {
@@ -29,9 +30,8 @@ function startTimer(stop) {
         }
     }, 1000);
 }
-
+// Function run to update the quiz state
 function quizStateCheck() {
-    console.log(quizState);
     localStorage.setItem("quizState", quizState);
     switch (quizState) {
         case 0: 
@@ -60,7 +60,7 @@ function quizStateCheck() {
             break;
     }
 }
-
+// Gets displayed right at the beginning
 function mainMenu() {
     rootEl.innerHTML = "";
     let h1 = document.createElement("h1");
@@ -70,11 +70,14 @@ function mainMenu() {
     p.textContent = "Start it now!";
     button.textContent = "Start";
     rootEl.append(h1, p, button);
+    // Button listener that initializes the quiz
     button.addEventListener("click", function (){
         quizState = 1;
         quizState1();
     });
 }
+// quizState1 sets the scores and timers,
+// creates a header and buttons and puts them through the displayQuizElements function
 function quizState1() {
     rootEl.innerHTML = "";
     localStorage.setItem("score", 0);
@@ -93,6 +96,8 @@ function quizState1() {
     button4.textContent = "Display Object on Monitor";
     displayQuizElements(correctButton1, button2, button3, button4, h2);
 }
+// QuizState functions 2-5 are identical besides text content, 
+// they create a header and buttons and put them through the displayQuizElements function
 function quizState2() {
     rootEl.innerHTML = "";
     let h2 = document.createElement("h2");
@@ -153,6 +158,7 @@ function quizState5() {
     button4.textContent = "flex-position: center";
     displayQuizElements(correctButton1, button2, button3, button4, h2);
 }
+// The screen right before the high score screen that lets you store your highscore
 function writeHighScoreScreen() {
     rootEl.innerHTML = "";
     clearInterval(interval);
@@ -184,19 +190,20 @@ function writeHighScoreScreen() {
         quizStateCheck();
     });
 }
+// Displays highscores
 function highScoreScreen() {
     rootEl.innerHTML = "";
     let h2 = document.createElement("h2");
     h2.textContent = "High Scores:";
     let ol = document.createElement("ol");
+    // Checks to see if there are any highscores and displays them in the loop
     try {
         let highScores;
         try {
-        highScores = JSON.parse(localStorage.getItem("highScores"));
+            highScores = JSON.parse(localStorage.getItem("highScores"));
         } catch (e) {
             highScores = []; 
         }
-        console.log(highScores.length + " lenght")
         for (let i = 0; i < highScores.length; i++){
             try { 
                 if (!Array.isArray(highScores) || highScores === "") break;
@@ -212,15 +219,19 @@ function highScoreScreen() {
     let button2 = document.createElement("button");
     button2.textContent = "Clear Highscores";
     rootEl.append(h2, ol, button1, button2)
+    // Back to main menu button listener
     button1.addEventListener("click", function(){
         quizState = 0;
         quizStateCheck();
     });
+    // Reset Highscores button listener
     button2.addEventListener("click", function(){
         localStorage.setItem("highScores", [])
         highScoreScreen();
     });
 }
+// Function that is run at the end of every quiz page in order to display all the elements
+// and add event listeners to all the buttons 
 function displayQuizElements(correctButton1, button2, button3, button4, header) {
     var nums = [];
     nums[0] = correctButton1;
@@ -229,9 +240,12 @@ function displayQuizElements(correctButton1, button2, button3, button4, header) 
     nums[3] = button4;
 
     rootEl.append(header)
+    // Counts down from 4 in order to avoid repeat looping
     for (var i = 4; i > 0; i--) {
+        // Randomizes the order of the answers
         rand = Math.floor(Math.random() * i);
         rootEl.append(nums[rand]);
+        // Listener checks if the correct button was pressed and displays it on the next screen
         nums[rand].addEventListener("click", function () {
             quizState++;
             quizStateCheck();
@@ -252,7 +266,8 @@ function displayQuizElements(correctButton1, button2, button3, button4, header) 
                 time -= 5;
                 localStorage.setItem("timer", time);
             }
-        })
+        });
+        // Removes the winning button
         nums.splice([rand], 1);
     }
 }
